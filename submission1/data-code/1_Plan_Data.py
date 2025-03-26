@@ -1,46 +1,51 @@
 import pandas as pd
 
-y_start = 2015
+y_start = 2010
 y_end = 2015
 full_ma_data = pd.DataFrame()
 
+
 for y in range(y_start, y_end+1):
     # Basic contract/plan information
-    ma_path = f"/Users/ilsenovis/Documents/GitHub/ECON470/data/input/CSPC/CPSC_Contract_Info_{y}_01.csv"
-    contract_info = pd.read_csv(ma_path, skiprows=1, encoding='latin1', names=[
-        "contractid", "planid", "org_type", "plan_type", "partd", "snp", "eghp", "org_name",
-        "org_marketing_name", "plan_name", "parent_org", "contract_date"
-    ], dtype={
-        "contractid": str,
-        "planid": float,
-        "org_type": str,
-        "plan_type": str,
-        "partd": str,
-        "snp": str,
-        "eghp": str,
-        "org_name": str,
-        "org_marketing_name": str,
-        "plan_name": str,
-        "parent_org": str,
-        "contract_date": str
-    })
+    ma_path = f"/Users/ilsenovis/ECON470HW4/data/input/1_CSPC/CPSC_Contract_Info_{y}_01.csv"
+    contract_info = pd.read_csv(ma_path,
+                                skiprows=1,
+                                encoding='latin1',
+                                names=["contractid", "planid", "org_type", "plan_type",
+                                       "partd", "snp", "eghp", "org_name", "org_marketing_name",
+                                       "plan_name", "parent_org", "contract_date"], 
+                                dtype={
+                                    "contractid": str,
+                                    "planid": float,
+                                    "org_type": str,
+                                    "plan_type": str,
+                                    "partd": str,
+                                    "snp": str,
+                                    "eghp": str,
+                                    "org_name": str,
+                                    "org_marketing_name": str,
+                                    "plan_name": str,
+                                    "parent_org": str,
+                                    "contract_date": str
+                                })
 
     contract_info['id_count'] = contract_info.groupby(['contractid', 'planid']).cumcount() + 1
     contract_info = contract_info[contract_info['id_count'] == 1].drop(columns=['id_count'])
 
-     # Enrollments per plan
-    ma_path = f"/Users/ilsenovis/Documents/GitHub/ECON470/data/input/CSPC/CPSC_Enrollment_Info_{y}_01.csv"
-    enroll_info = pd.read_csv(ma_path, skiprows=1, names=[
-        "contractid", "planid", "ssa", "fips", "state", "county", "enrollment"
-    ], dtype={
-        "contractid": str,
-        "planid": float,
-        "ssa": float,
-        "fips": float,
-        "state": str,
-        "county": str,
-        "enrollment": float
-    }, na_values="*")
+    # Enrollments per plan
+    ma_path = f"/Users/ilsenovis/ECON470HW4/data/input/1_CSPC/CPSC_Enrollment_Info_{y}_01.csv"
+    enroll_info = pd.read_csv(ma_path,
+                              skiprows=1,
+                              names=[ "contractid", "planid", "ssa", "fips", "state", "county", "enrollment"],
+                              dtype={
+                                  "contractid": str,
+                                  "planid": float,
+                                  "ssa": float,
+                                  "fips": float,
+                                  "state": str,
+                                  "county": str,
+                                  "enrollment": float
+                                }, na_values="*")
 
 # Merge contract info with enrollment info
     plan_data = contract_info.merge(enroll_info, on=["contractid", "planid"], how="left")
@@ -65,4 +70,5 @@ for y in range(y_start, y_end+1):
     # Concatenate data
     full_ma_data = pd.concat([full_ma_data, plan_data], ignore_index=True)
 
-full_ma_data.to_csv("data/output/full_ma_data.csv", index=False)
+full_ma_data.to_csv("/Users/ilsenovis/ECON470HW4/data/output/full_plan_data.csv", index=False)
+

@@ -3,7 +3,7 @@ import pandas as pd
 
 # Read in monthly files, append to yearly file, fill in missing info, and collapse down to yearly file
 service_area_data = []
-y_start = 2015
+y_start = 2010
 y_end = 2015
 monthlist = [1]
 contract_service_area = pd.DataFrame()
@@ -16,7 +16,7 @@ for y in range(y_start, y_end+1):
     for m in monthlist:
         # Pull service area data by contract/month
         m = str(m).rjust(2, '0')
-        ma_path = f"data/input/SA/MA_Cnty_SA_{y}_{m}.csv"
+        ma_path = f"/Users/ilsenovis/ECON470HW4/data/input/3_SA/MA_Cnty_SA_{y}_{m}.csv"
         service_area = pd.read_csv(ma_path, skiprows=1, names=[
             "contractid", "org_name", "org_type", "plan_type", "partial", "eghp",
             "ssa", "fips", "county", "state", "notes"
@@ -56,4 +56,5 @@ for y in range(y_start, y_end+1):
     # Concatenate data
     contract_service_area = pd.concat([contract_service_area, service_year], ignore_index=True)
 
-contract_service_area.to_csv("data/output/contract_service_area.csv", index=False)
+contract_service_area.to_csv("/Users/ilsenovis/ECON470HW4/data/output/full_contract_service_area.csv", index=False)
+
