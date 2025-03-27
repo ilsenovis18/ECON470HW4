@@ -212,4 +212,3 @@ for year in range (2010, 2016):
 risk_rebate_final = pd.concat(risk_rebate_yearly.values(), ignore_index=True)
 
 risk_rebate_final.to_csv('/Users/ilsenovis/ECON470HW4/data/output/risk_rebates.csv', index=False)
-
