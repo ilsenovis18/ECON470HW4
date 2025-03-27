@@ -406,4 +406,4 @@ star_ratings = pd.DataFrame(star_ratings)
 if 'new_contract' not in star_ratings.columns:
     star_ratings['new_contract'] = 0
 
-star_ratings.to_csv("/Users/ilsenovis/ECON470HW4/data/output/star_ratings.csv", index=False)
+star_ratings.to_csv("/Users/ilsenovis/ECON470HW4/data/output/5_star_ratings.csv", index=False)

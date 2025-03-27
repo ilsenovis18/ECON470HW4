@@ -85,4 +85,4 @@ ma_penetration_data = pd.concat(yearly_penetration, ignore_index=True)
 ma_penetration_data.reset_index(drop=True, inplace=True)
 
 # Optional: save it
-ma_penetration_data.to_csv("/Users/ilsenovis/ECON470HW4/data/output/ma_penetration.csv", index=False)
+ma_penetration_data.to_csv("/Users/ilsenovis/ECON470HW4/data/output/4_ma_penetration.csv", index=False)

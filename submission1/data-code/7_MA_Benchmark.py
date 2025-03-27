@@ -89,4 +89,4 @@ for year in range(2010, 2016):
     benchmark_data.append(df)
 
 benchmark_final = pd.concat(benchmark_data, ignore_index=True)
-benchmark_final.to_csv('/Users/ilsenovis/ECON470HW4/data/output/ma_benchmark.csv', index=False)
+benchmark_final.to_csv('/Users/ilsenovis/ECON470HW4/data/output/7_ma_benchmark.csv', index=False)

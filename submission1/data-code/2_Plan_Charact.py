@@ -621,4 +621,4 @@ for year in years:
 
 plan_premiums = pd.concat(all_years_data, ignore_index=True)
 
-plan_premiums.to_csv("/Users/ilsenovis/ECON470HW4/data/output/plan_premiums.csv", index=False)
+plan_premiums.to_csv("/Users/ilsenovis/ECON470HW4/data/output/2_plan_premiums.csv", index=False)

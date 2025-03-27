@@ -95,4 +95,4 @@ ffs_data_yearly[2015] = ffs_2015
 
 ffs_costs_final = pd.concat(ffs_data_yearly.values(), ignore_index=True)
 
-ffs_costs_final.to_csv('/Users/ilsenovis/ECON470HW4/data/output/ffs_costs.csv', index=False)
+ffs_costs_final.to_csv('/Users/ilsenovis/ECON470HW4/data/output/8_ffs_costs.csv', index=False)

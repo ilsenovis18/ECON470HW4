@@ -70,5 +70,5 @@ for y in range(y_start, y_end+1):
     # Concatenate data
     full_ma_data = pd.concat([full_ma_data, plan_data], ignore_index=True)
 
-full_ma_data.to_csv("/Users/ilsenovis/ECON470HW4/data/output/full_plan_data.csv", index=False)
+full_ma_data.to_csv("/Users/ilsenovis/ECON470HW4/data/output/1_full_plan_data.csv", index=False)
 

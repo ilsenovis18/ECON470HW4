@@ -56,5 +56,5 @@ for y in range(y_start, y_end+1):
     # Concatenate data
     contract_service_area = pd.concat([contract_service_area, service_year], ignore_index=True)
 
-contract_service_area.to_csv("/Users/ilsenovis/ECON470HW4/data/output/full_contract_service_area.csv", index=False)
+contract_service_area.to_csv("/Users/ilsenovis/ECON470HW4/data/output/3_full_contract_service_area.csv", index=False)
 
