@@ -117,5 +117,5 @@ final["ma_rate"] = np.select(conditions, choices, default=np.nan)
 final["ma_rate"] = pd.to_numeric(final["ma_rate"], errors="coerce")
 
 # Save final dataset
-final.to_csv("/Users/ilsenovis/ECON470HW4/data/output/final_ma_data.csv", index=False)
+final.to_csv("/Users/ilsenovis/ECON470HW4/data/output/_final_ma_data.csv", index=False)
 print("Final MA data saved.")
