@@ -16,6 +16,20 @@ summary_file10 = os.path.join(star_rating_path, "2010_Part_C_Report_Card_Master_
 # Get column names from the pickle
 column_names_2010 = rating_vars["2010"]
 
+# Define common replacements
+star_replacements10 = {
+    "1 out of 5 stars": "1",
+    "1.5 out of 5 stars": "1.5",
+    "2 out of 5 stars": "2",
+    "2.5 out of 5 stars": "2.5",
+    "3 out of 5 stars": "3",
+    "3.5 out of 5 stars": "3.5",
+    "4 out of 5 stars": "4",
+    "4.5 out of 5 stars": "4.5",
+    "5 out of 5 stars": "5",
+    "5 stars": "5"
+}
+
 # Load domain file
 star_data_2010a = pd.read_csv(
     domain_file10,
@@ -25,15 +39,10 @@ star_data_2010a = pd.read_csv(
     encoding='latin1'
 )
 
-# Replace star ratings if needed (you can skip this if already numeric)
-star_replacements10 = {
-    "1 out of 5 stars": "1",
-    "2 out of 5 stars": "2",
-    "3 out of 5 stars": "3",
-    "4 out of 5 stars": "4",
-    "5 out of 5 stars": "5"
-}
-star_data_2010a.replace(star_replacements10, inplace=True)
+# Clean all string values and apply replacements
+star_data_2010a = star_data_2010a.applymap(
+    lambda x: star_replacements10.get(str(x).strip().lower(), x) if isinstance(x, str) else x
+)
 
 # Convert rating columns to numeric (excluding ID columns)
 id_cols = ["contractid", "org_type", "contract_name", "org_marketing"]
@@ -51,22 +60,13 @@ star_data_2010b = pd.read_csv(
 
 # Flag new contracts
 star_data_2010b["new_contract"] = star_data_2010b["partc_score"].apply(
-    lambda x: 1 if str(x).strip() == "Plan too new to be measured" else 0
+    lambda x: 1 if str(x).strip().lower() == "plan too new to be measured" else 0
 )
 
-# Replace strings with numeric star scores
-score_replacements10 = {
-    "1 out of 5 stars": "1",
-    "1.5 out of 5 stars": "1.5",
-    "2 out of 5 stars": "2",
-    "2.5 out of 5 stars": "2.5",
-    "3 out of 5 stars": "3",
-    "3.5 out of 5 stars": "3.5",
-    "4 out of 5 stars": "4",
-    "4.5 out of 5 stars": "4.5",
-    "5 stars": "5"
-}
-star_data_2010b["partc_score"] = star_data_2010b["partc_score"].replace(score_replacements10)
+# Normalize and convert partc_score
+star_data_2010b["partc_score"] = star_data_2010b["partc_score"].apply(
+    lambda x: star_replacements10.get(str(x).strip().lower(), x) if isinstance(x, str) else x
+)
 star_data_2010b["partc_score"] = pd.to_numeric(star_data_2010b["partc_score"], errors="coerce")
 
 # Keep relevant columns
@@ -93,15 +93,10 @@ star_data_2011a = pd.read_csv(
     encoding='latin1'
 )
 
-# Replace star rating strings with numeric equivalents if needed
-star_replacements11 = {
-    "1 out of 5 stars": "1",
-    "2 out of 5 stars": "2",
-    "3 out of 5 stars": "3",
-    "4 out of 5 stars": "4",
-    "5 out of 5 stars": "5"
-}
-star_data_2011a.replace(star_replacements11, inplace=True)
+# Clean all string values and apply replacements
+star_data_2011a = star_data_2011a.applymap(
+    lambda x: star_replacements10.get(str(x).strip().lower(), x) if isinstance(x, str) else x
+)
 
 # Convert numeric columns
 id_cols_2011 = ["contractid", "org_type", "contract_name", "org_marketing"]
@@ -121,25 +116,16 @@ star_data_2011b = pd.read_csv(
 
 # Flag new contracts
 star_data_2011b["new_contract"] = star_data_2011b.apply(
-    lambda row: 1 if str(row["partc_score"]).strip() == "Plan too new to be measured"
-                  or str(row["partcd_score"]).strip() == "Plan too new to be measured" else 0,
+    lambda row: 1 if str(row["partc_score"]).strip().lower() == "plan too new to be measured"
+                  or str(row["partcd_score"]).strip().lower() == "plan too new to be measured" else 0,
     axis=1
 )
 
-# Replace scores with numeric equivalents
-score_replacements11 = {
-    "1 out of 5 stars": "1",
-    "1.5 out of 5 stars": "1.5",
-    "2 out of 5 stars": "2",
-    "2.5 out of 5 stars": "2.5",
-    "3 out of 5 stars": "3",
-    "3.5 out of 5 stars": "3.5",
-    "4 out of 5 stars": "4",
-    "4.5 out of 5 stars": "4.5",
-    "5 stars": "5"
-}
+# Normalize and convert partc_score and partcd_score
 for col in ["partc_score", "partcd_score"]:
-    star_data_2011b[col] = star_data_2011b[col].replace(score_replacements11)
+    star_data_2011b[col] = star_data_2011b[col].apply(
+        lambda x: star_replacements10.get(str(x).strip().lower(), x) if isinstance(x, str) else x
+    )
     star_data_2011b[col] = pd.to_numeric(star_data_2011b[col], errors="coerce")
 
 # Create low_score flag
@@ -175,6 +161,11 @@ star_data_2012a = pd.read_csv(
     encoding='latin1'
 )
 
+# Clean all string values and apply replacements
+star_data_2012a = star_data_2012a.applymap(
+    lambda x: star_replacements10.get(str(x).strip().lower(), x) if isinstance(x, str) else x
+)
+
 # Convert relevant columns to numeric
 cols_to_convert = star_data_2012a.columns.difference(
     ["contractid", "org_type", "org_parent", "org_marketing"]
@@ -198,30 +189,21 @@ star_data_2012b = pd.read_csv(
 
 # Create flags
 star_data_2012b['new_contract'] = star_data_2012b.apply(
-    lambda row: 1 if row['partc_score'] == "Plan too new to be measured" or row['partcd_score'] == "Plan too new to be measured" else 0,
+    lambda row: 1 if str(row['partc_score']).strip().lower() == "plan too new to be measured" or str(row['partcd_score']).strip().lower() == "plan too new to be measured" else 0,
     axis=1
 )
 
+# Normalize and convert partc_score and partcd_score
+for col in ["partc_score", "partcd_score"]:
+    star_data_2012b[col] = star_data_2012b[col].apply(
+        lambda x: star_replacements10.get(str(x).strip().lower(), x) if isinstance(x, str) else x
+    )
+    star_data_2012b[col] = pd.to_numeric(star_data_2012b[col], errors="coerce")
+
+# Create low_score flag
 star_data_2012b['low_score'] = star_data_2012b['partc_lowscore'].apply(
     lambda x: 1 if str(x).strip().lower() == "yes" else 0
 )
-
-# Clean and convert scores
-score_replacements12 = {
-    "1 out of 5 stars": "1",
-    "1.5 out of 5 stars": "1.5",
-    "2 out of 5 stars": "2",
-    "2.5 out of 5 stars": "2.5",
-    "3 out of 5 stars": "3",
-    "3.5 out of 5 stars": "3.5",
-    "4 out of 5 stars": "4",
-    "4.5 out of 5 stars": "4.5",
-    "5 stars": "5"
-}
-
-for col in ["partc_score", "partcd_score"]:
-    star_data_2012b[col] = star_data_2012b[col].replace(score_replacements12)
-    star_data_2012b[col] = pd.to_numeric(star_data_2012b[col], errors="coerce")
 
 # Keep relevant columns
 star_data_2012b = star_data_2012b[[
@@ -253,6 +235,11 @@ star_data_2013a = pd.read_csv(
     encoding="latin1"
 )
 
+# Clean all string values and apply replacements
+star_data_2013a = star_data_2013a.applymap(
+    lambda x: star_replacements10.get(str(x).strip().lower(), x) if isinstance(x, str) else x
+)
+
 # Convert all quality measures to numeric
 cols_to_convert = star_data_2013a.columns.difference(
     ["contractid", "org_type", "contract_name", "org_marketing", "org_parent"]
@@ -276,18 +263,21 @@ star_data_2013b = pd.read_csv(
 
 # Flag new contracts
 star_data_2013b["new_contract"] = star_data_2013b.apply(
-    lambda x: 1 if x["partc_score"] == "Plan too new to be measured" or x["partcd_score"] == "Plan too new to be measured" else 0,
+    lambda x: 1 if str(x["partc_score"]).strip().lower() == "plan too new to be measured" or str(x["partcd_score"]).strip().lower() == "plan too new to be measured" else 0,
     axis=1
 )
 
-# Flag low score
+# Normalize and convert partc_score and partcd_score
+for col in ["partc_score", "partcd_score"]:
+    star_data_2013b[col] = star_data_2013b[col].apply(
+        lambda x: star_replacements10.get(str(x).strip().lower(), x) if isinstance(x, str) else x
+    )
+    star_data_2013b[col] = pd.to_numeric(star_data_2013b[col], errors="coerce")
+
+# Create low_score flag
 star_data_2013b["low_score"] = star_data_2013b["partc_lowscore"].apply(
     lambda x: 1 if str(x).strip().lower() == "yes" else 0
 )
-
-# Convert star scores to numeric
-star_data_2013b["partc_score"] = pd.to_numeric(star_data_2013b["partc_score"], errors="coerce")
-star_data_2013b["partcd_score"] = pd.to_numeric(star_data_2013b["partcd_score"], errors="coerce")
 
 # Keep selected columns
 star_data_2013b = star_data_2013b[[
@@ -319,6 +309,11 @@ star_data_2014a = pd.read_csv(
     encoding="latin1"
 )
 
+# Clean all string values and apply replacements
+star_data_2014a = star_data_2014a.applymap(
+    lambda x: star_replacements10.get(str(x).strip().lower(), x) if isinstance(x, str) else x
+)
+
 # Convert relevant columns to numeric
 cols_to_convert = star_data_2014a.columns.difference([
     "contractid", "org_type", "contract_name", "org_marketing", "org_parent"
@@ -339,13 +334,16 @@ star_data_2014b = pd.read_csv(
 
 # Flag new contracts
 star_data_2014b["new_contract"] = star_data_2014b.apply(
-    lambda row: 1 if row["partc_score"] == "Plan too new to be measured" or row["partcd_score"] == "Plan too new to be measured" else 0,
+    lambda row: 1 if str(row["partc_score"]).strip().lower() == "plan too new to be measured" or str(row["partcd_score"]).strip().lower() == "plan too new to be measured" else 0,
     axis=1
 )
 
-# Convert star scores to numeric
-star_data_2014b["partc_score"] = pd.to_numeric(star_data_2014b["partc_score"], errors="coerce")
-star_data_2014b["partcd_score"] = pd.to_numeric(star_data_2014b["partcd_score"], errors="coerce")
+# Normalize and convert partc_score and partcd_score
+for col in ["partc_score", "partcd_score"]:
+    star_data_2014b[col] = star_data_2014b[col].apply(
+        lambda x: star_replacements10.get(str(x).strip().lower(), x) if isinstance(x, str) else x
+    )
+    star_data_2014b[col] = pd.to_numeric(star_data_2014b[col], errors="coerce")
 
 # Keep only necessary columns
 star_data_2014b = star_data_2014b[["contractid", "new_contract", "partc_score", "partcd_score"]]
@@ -375,6 +373,11 @@ star_data_2015a = pd.read_csv(
     encoding="latin1"
 )
 
+# Clean all string values and apply replacements
+star_data_2015a = star_data_2015a.applymap(
+    lambda x: star_replacements10.get(str(x).strip().lower(), x) if isinstance(x, str) else x
+)
+
 # Convert to numeric where appropriate
 cols_to_convert = star_data_2015a.columns.difference([
     "contractid", "org_type", "contract_name", "org_marketing", "org_parent"
@@ -395,13 +398,16 @@ star_data_2015b = pd.read_csv(
 
 # Flag new contracts
 star_data_2015b["new_contract"] = star_data_2015b.apply(
-    lambda row: 1 if row["partc_score"] == "Plan too new to be measured" or row["partcd_score"] == "Plan too new to be measured" else 0,
+    lambda row: 1 if str(row["partc_score"]).strip().lower() == "plan too new to be measured" or str(row["partcd_score"]).strip().lower() == "plan too new to be measured" else 0,
     axis=1
 )
 
-# Convert scores to numeric
-star_data_2015b["partc_score"] = pd.to_numeric(star_data_2015b["partc_score"], errors="coerce")
-star_data_2015b["partcd_score"] = pd.to_numeric(star_data_2015b["partcd_score"], errors="coerce")
+# Normalize and convert partc_score and partcd_score
+for col in ["partc_score", "partcd_score"]:
+    star_data_2015b[col] = star_data_2015b[col].apply(
+        lambda x: star_replacements10.get(str(x).strip().lower(), x) if isinstance(x, str) else x
+    )
+    star_data_2015b[col] = pd.to_numeric(star_data_2015b[col], errors="coerce")
 
 # Keep only needed columns
 star_data_2015b = star_data_2015b[["contractid", "new_contract", "partc_score", "partcd_score"]]
@@ -424,4 +430,47 @@ star_ratings = pd.DataFrame(star_ratings)
 if 'new_contract' not in star_ratings.columns:
     star_ratings['new_contract'] = 0
 
+star_ratings.to_csv("/Users/ilsenovis/ECON470HW4/data/output/5_star_ratings.csv", index=False)
+
+# Identify plans likely rounded up or down
+def tag_rounded_plans(df, score_col="partc_score", bw=0.125):
+    # Identify domain columns: exclude non-domain vars
+    domain_cols = df.columns.difference([
+        "contractid", "year", "partc_score", "partcd_score",
+        "new_contract", "low_score"
+    ])
+
+    # Compute average of domain scores (excluding NaNs)
+    df["domain_avg"] = df[domain_cols].mean(axis=1, skipna=True)
+
+    # Compute difference between final score and domain average
+    df["rounding_diff"] = df[score_col] - df["domain_avg"]
+
+    # Tag rounded up/down based on bandwidth
+    df["rounded_up"] = (df["rounding_diff"] >= bw).astype(int)
+    df["rounded_down"] = (df["rounding_diff"] <= -bw).astype(int)
+
+    return df
+
+# Apply rounding flags by star threshold
+def tag_rounded_plans_by_threshold(df, score_col="partc_score", bw=0.125):
+    # Identify domain columns: only numeric columns excluding specific metadata
+    domain_cols = df.select_dtypes(include='number').columns.difference([
+        "partc_score", "partcd_score", "new_contract", "low_score"
+    ])
+
+    # Compute domain average
+    df["domain_avg"] = df[domain_cols].mean(axis=1, skipna=True)
+    df["rounding_diff"] = df[score_col] - df["domain_avg"]
+
+    # Check for rounding to specific star thresholds
+    thresholds = [1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0]
+    for t in thresholds:
+        df[f"rounded_up_to_{t}"] = ((df[score_col] == t) & ((df["domain_avg"] + bw) <= t)).astype(int)
+        df[f"rounded_down_to_{t}"] = ((df[score_col] == t) & ((df["domain_avg"] - bw) >= t)).astype(int)
+
+    return df
+
+# Tag rounded plans and save final output
+star_ratings = tag_rounded_plans_by_threshold(star_ratings, score_col="partc_score", bw=0.125)
 star_ratings.to_csv("/Users/ilsenovis/ECON470HW4/data/output/5_star_ratings.csv", index=False)

@@ -31,10 +31,39 @@ final = final[
 
 # Merge star ratings
 final = final.merge(
-    star_ratings.drop(columns=["contract_name", "org_type", "org_marketing"], errors="ignore"),
+    star_ratings,
     on=["contractid", "year"],
     how="left"
 )
+
+# Calculate domain average and rounding difference
+domain_cols = [
+    'breastcancer_screen', 'rectalcancer_screen', 'cv_diab_cholscreen', 'glaucoma_test',
+    'monitoring', 'flu_vaccine', 'pn_vaccine', 'physical_health', 'mental_health',
+    'osteo_test', 'physical_monitor', 'primaryaccess', 'osteo_manage', 'diab_healthy',
+    'bloodpressure', 'ra_manage', 'copd_test', 'bladder', 'falling', 'nodelays',
+    'doctor_communicate', 'carequickly', 'customer_service', 'overallrating_care',
+    'overallrating_plan', 'complaints_plan', 'appeals_timely', 'appeals_review',
+    'leave_plan', 'audit_problems', 'hold_times', 'info_accuracy', 'ttyt_available',
+    'cv_cholscreen', 'diab_cholscreen', 'diabetes_eye', 'diabetes_kidney',
+    'diabetes_bloodsugar', 'diabetes_chol', 'bmi_assess', 'older_medication',
+    'older_function', 'older_pain', 'readmissions', 'access_problems', 'coordination',
+    'improve', 'enroll_timely', 'specialneeds_manage'
+]
+
+final["domain_avg"] = final[domain_cols].mean(axis=1, skipna=True)
+final["rounding_diff"] = final["partc_score"] - final["domain_avg"]
+
+for threshold in [1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0]:
+    final[f"rounded_up_to_{threshold}"] = (
+        (final["partc_score"] == threshold) &
+        (np.floor(final["domain_avg"] * 2) / 2 < threshold)
+    ).astype(int)
+
+    final[f"rounded_down_to_{threshold}"] = (
+        (final["partc_score"] == threshold) &
+        (np.floor(final["domain_avg"] * 2) / 2 > threshold)
+    ).astype(int)
 
 # Clean penetration data
 ma_penetration_data = ma_penetration_data.drop(columns=["ssa_first"], errors="ignore")
